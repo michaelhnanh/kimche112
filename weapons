@@ -1,0 +1,73 @@
+from cmu_graphics import *
+from background import *
+# from upgrades import *
+# from weapons import *
+from enemy import *
+import math, random
+
+class Weapon:
+     def __init__(self,name,damage,range):
+          self.name = name
+          self.damage = damage
+          self.range = range
+
+     def __repr__(self):
+          return f'Attacking with {self.name}'
+     
+     def hitEnemy(self,damage,range):
+          for enemy in Enemy.enemyList:
+            enemyDistance=distance(app.player.x,app.player.y,app.enemy.x,app.enemy.y)
+            if self.range>=enemyDistance:
+                app.enemy.hp-=self.damage
+                print(f'{self.name} hit the enemy!')
+                if app.enemy.hp==0:
+                     Enemy.enemyList.pop(enemy)
+            else:
+                return 'Oops,off target!'
+        
+class Sword(Weapon):
+     def __init__(self,name,damage,range,speed):
+         super().__init__(name='sword',damage=50,range=10)
+         self.speed = speed
+     
+     def hit(self):
+         return 'You are swing the sword'
+
+class Gun1(Weapon):
+     def __init__(self,name,damage,range,speed):
+         super().__init__(name='gun1',damage=100,range=30)
+         self.speed = speed
+
+     def hit(self):
+         return 'You are using the gun1'
+     
+class Gun2(Weapon):
+     def __init__(self,name,damage,range,speed):
+         super().__init__(name='gun2',damage=70,range=30)
+         self.speed = speed
+
+     def hit(self):
+         return 'You are using the gun2'
+     
+class bullet(Weapon):
+    bulletList = []
+    bulletId = 0
+    def __init__(self, name, x, y):
+        self.name = name
+        bullet.bulletId += 1
+        self.id = bullet.bulletId
+        bullet.bulletList.append(self)
+        self.x = x
+        self.y = y
+
+def getRadiusAndAngleToEndpoint(cx,cy,targetX,targetY):
+    radius=distance(cx,cy,targetX,targetY)
+    angle=math.degrees(math.atan2(cy-targetY,targetX-cx))%360
+    return (radius,angle)
+
+def getRadiusEndpoint(cx,cy,r,theta):
+        return (cx+r*math.cos(math.radians(theta)),
+                (cy-r*math.sin(math.radians(theta))))
+
+def distance(x0,y0,x1,y1):
+    return ((x1-x0)**2+(y1-y0)**2)**0.5
